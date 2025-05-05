@@ -157,9 +157,9 @@ export default function TableOrderPage() {
           ))}
       </div>
 
-      <div className="flex justify-center mb-50">
+      {/*   <div className="flex justify-center mb-50">
         <Button className="bg-red-500 text-white">ลบร้าน</Button>
-      </div>
+      </div> */}
     </div>
   );
 }
