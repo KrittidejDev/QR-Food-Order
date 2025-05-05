@@ -115,9 +115,9 @@ export default function MenusPage() {
         </Button>
       </div>
 
-      <div className="flex flex-wrap gap-3 ">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         {menuItems.map((item) => (
-          <Card key={item.id} className="flex max-w-1/2 flex-1/3 p-4  ">
+          <Card key={item.id} className=" flex flex-col  p-2 gap-2">
             {item.image && <img src={item.image} alt={item.name} width={500} />}
             <div className="flex flex-col mb-auto">
               <div className="font-semibold">{item.name}</div>
@@ -126,12 +126,14 @@ export default function MenusPage() {
 
             <div className="flex justify-end ">
               <Button
-                className="bg-gray-500 text-white px-2 rounded hover:bg-yellow-600 mr-2"
+                size={"sm"}
+                className="bg-gray-500 text-white text-sm rounded hover:bg-yellow-600 mr-2"
                 onClick={() => _handleAddMenu(item)}
               >
-                ✏️ แก้ไข
+                แก้ไข
               </Button>
               <Button
+                size={"sm"}
                 className="bg-red-500 text-white  px-2 rounded hover:bg-red-600"
                 onClick={() => _handleDeleteMenu(item.id)}
               >

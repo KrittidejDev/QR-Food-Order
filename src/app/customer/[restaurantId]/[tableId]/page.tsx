@@ -106,13 +106,11 @@ export default function TableOrderPage() {
         <div className="font-bold">{_restaurant?.name}</div>
         <div className="text-sm mb-2">{_tableData?.name}</div>
       </div>
-      <div className="flex flex-wrap gap-3 p-4 ">
+
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         {_menuData &&
           _menuData.map((e) => (
-            <Card
-              key={e.id}
-              className=" flex flex-col max-w-1/2 flex-1/3 p-2 gap-2"
-            >
+            <Card key={e.id} className=" flex flex-col  p-2 gap-2">
               {e.image && (
                 <img
                   src={e.image}

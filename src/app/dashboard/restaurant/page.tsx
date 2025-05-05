@@ -49,7 +49,8 @@ const AddRestaurantForm = () => {
       });
 
       if (res.status === 201) {
-        router.push("/dashboard");
+        router.replace("/dashboard");
+        window.location.reload();
       }
     } catch (error) {
       setError("Failed to create restaurant.");
