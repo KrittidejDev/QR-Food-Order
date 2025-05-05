@@ -22,6 +22,7 @@ import {
 } from "./ui/collapsible";
 import Link from "next/link";
 import { setSelectedRestaurant } from "@/store/slices/restaurantSlice";
+import { RestaurantType, UserType } from "@/utils/type";
 
 type RestaurantProps = {
   id: string;
@@ -32,19 +33,14 @@ type RestaurantProps = {
 export function AppSidebar() {
   const router = useRouter();
   const dispatch = useDispatch();
-  const userId = useSelector((state: any) => state.auth.user?.id);
+  const userId = useSelector((state: UserType) => state.auth.user?.id);
   const [_restaurants, _setRestaurants] = useState<RestaurantProps[]>([]);
 
-  useEffect(() => {
+  const fetch = async () => {
     if (!userId) {
       dispatch(logout());
       router.push("/auth/login");
-    } else {
-      fetch();
     }
-  }, [userId, dispatch, router]);
-
-  const fetch = async () => {
     try {
       const res = await axios.get(`/api/restaurants?ownerId=${userId}`);
       if (res.status === 200) {
@@ -55,6 +51,10 @@ export function AppSidebar() {
     }
   };
 
+  useEffect(() => {
+    fetch();
+  }, []);
+
   const handleLogout = async () => {
     const res = await axios.post("/api/auth/logout");
     if (res.status === 200) {
@@ -63,7 +63,7 @@ export function AppSidebar() {
     }
   };
 
-  const handleSelectRestaurant = (data: any) => {
+  const handleSelectRestaurant = (data: RestaurantType) => {
     if (data) {
       dispatch(
         setSelectedRestaurant({

@@ -7,29 +7,21 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-
-type RestaurantType = {
-  address: string;
-  createdAt: string;
-  id: string;
-  name: string;
-  ownerId: string;
-  phone: string;
-  cover_img?: string;
-  avatar?: string;
-};
+import { MenuType, RestaurantType, UserType } from "@/utils/type";
 
 const CreateRestaurantPage = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
-  const userId = useSelector((state: any) => state.auth.user?.id);
+  const userId = useSelector((state: UserType) => state.auth.user?.id);
   const [_restaurant, _setRestaurant] = useState<RestaurantType>();
-  const [_menuData, _setMenuDat] = useState();
-  const [selectedItems, setSelectedItems] = useState([]);
+  const [_menuData, _setMenuDat] = useState<MenuType[]>();
+  const [_selectedItems, _setSelectedItems] = useState<Record<string, number>>(
+    {}
+  );
 
   useEffect(() => {
     fetch();
-  }, [userId]);
+  }, []);
 
   const fetch = async () => {
     try {
@@ -55,6 +47,10 @@ const CreateRestaurantPage = () => {
       const selected = allRestaurants.find((r: RestaurantType) => r.id === id);
       _setRestaurant(selected);
     }
+  };
+
+  const handleAdd = () => {
+    _setSelectedItems({ data: 0 });
   };
 
   return (
@@ -89,13 +85,13 @@ const CreateRestaurantPage = () => {
                 <div className="text-sm">{e.price} บาท</div>
               </div>
               <div className="flex items-center justify-end gap-2 mt-auto">
-                {selectedItems[e.id] >= 1 && (
+                {_selectedItems[e.id] >= 1 && (
                   <>
                     <Button
                       variant="outline"
                       size="sm"
                       className={`text-sm  hover:bg-yellow-600 ${
-                        selectedItems[e.id] >= 1
+                        _selectedItems[e.id] >= 1
                           ? "bg-orange-500 text-white"
                           : ""
                       }`}
@@ -103,16 +99,16 @@ const CreateRestaurantPage = () => {
                     >
                       -
                     </Button>
-                    <span className="text-sm">{selectedItems[e.id]}</span>
+                    <span className="text-sm">{_selectedItems[e.id]}</span>
                   </>
                 )}
                 <Button
                   variant="outline"
                   size="sm"
                   className={`text-sm  hover:bg-yellow-600 ${
-                    selectedItems[e.id] >= 1 ? "bg-orange-500 text-white" : ""
+                    _selectedItems[e.id] >= 1 ? "bg-orange-500 text-white" : ""
                   }`}
-                  // onClick={() => handleAdd(e.id)}
+                  onClick={() => handleAdd(/* e.id */)}
                 >
                   +
                 </Button>

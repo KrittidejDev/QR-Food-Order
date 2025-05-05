@@ -12,7 +12,7 @@ export async function DELETE(
       where: { id: id },
     });
     return NextResponse.json({ message: "Table deleted" });
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: "Table not found" }, { status: 404 });
   }
 }

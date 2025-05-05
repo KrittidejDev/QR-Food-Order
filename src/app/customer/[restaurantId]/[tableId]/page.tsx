@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { TableType } from "@/utils/type";
 
 type RestaurantType = {
   address: string;
@@ -29,7 +30,7 @@ type MenuType = {
 export default function TableOrderPage() {
   const [_menuData, _setMenuData] = useState<MenuType[]>([]);
   const [_restaurant, _setRestaurant] = useState<RestaurantType>();
-  const [_tableData, _setTableData] = useState<any>();
+  const [_tableData, _setTableData] = useState<TableType>();
   const [selectedItems, setSelectedItems] = useState<{ [id: string]: number }>(
     {}
   );
@@ -52,7 +53,7 @@ export default function TableOrderPage() {
         const restaurants = res.data.restaurant;
         const menu = restaurants.menuItems;
         const tables = restaurants.tables;
-        const currentTable = tables.find((t: any) => t.id === tableId);
+        const currentTable = tables.find((t: TableType) => t.id === tableId);
 
         _setRestaurant(restaurants);
         _setMenuData(menu);

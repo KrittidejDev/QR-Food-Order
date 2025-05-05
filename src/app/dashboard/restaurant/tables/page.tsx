@@ -6,13 +6,7 @@ import { useSelector } from "react-redux";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import domtoimage from "dom-to-image";
-
-type TableType = {
-  id: string;
-  name: string;
-  qr_code_link: string;
-  restaurantId: string;
-};
+import { TableType } from "@/utils/type";
 
 type RestaurantType = {
   restaurant: {
@@ -75,7 +69,9 @@ export default function TableManager() {
   };
 
   useEffect(() => {
-    if (id) fetchTables();
+    if (id) {
+      fetchTables();
+    }
   }, [id]);
 
   return (

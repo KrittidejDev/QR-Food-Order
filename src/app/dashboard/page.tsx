@@ -1,5 +1,3 @@
-// pages/dashboard.tsx
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -10,37 +8,36 @@ import { logout } from "@/store/slices/authSlice";
 import { setSelectedRestaurant } from "@/store/slices/restaurantSlice";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
+import { RestaurantType, UserType } from "@/utils/type";
 
 const DashBoardPage = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const [restaurants, setRestaurants] = useState([]);
+  const [restaurants, setRestaurants] = useState<RestaurantType[]>([]);
 
-  const userId = useSelector((state: any) => state.auth.user?.id);
+  const userId = useSelector((state: UserType) => state.auth.user?.id);
 
-  useEffect(() => {
+  const fetchRestaurants = async () => {
     if (!userId) {
       dispatch(logout());
       router.push("/auth/login");
     }
-  }, [userId, dispatch, router]);
+    try {
+      const res = await axios.get(`/api/restaurants?ownerId=${userId}`);
+      if (res.status === 200) {
+        setRestaurants(res.data.restaurants);
+      }
+    } catch (error) {
+      console.error("Failed to fetch restaurants:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchRestaurants = async () => {
-      try {
-        const res = await axios.get(`/api/restaurants?ownerId=${userId}`);
-        if (res.status === 200) {
-          setRestaurants(res.data.restaurants); // เก็บข้อมูลร้าน
-        }
-      } catch (error) {
-        console.error("Failed to fetch restaurants:", error);
-      }
-    };
     fetchRestaurants();
   }, []);
 
   const handleSelectRestaurant = (id: string) => {
-    const selected = restaurants.find((r: any) => r.id === id);
+    const selected = restaurants.find((r: RestaurantType) => r.id === id);
 
     if (selected) {
       dispatch(
@@ -69,7 +66,7 @@ const DashBoardPage = () => {
 
         <div>
           <div className="space-y-2">
-            {restaurants.map((restaurant: any) => (
+            {restaurants.map((restaurant: RestaurantType) => (
               <Card
                 key={restaurant.id}
                 onClick={() => handleSelectRestaurant(restaurant.id)}

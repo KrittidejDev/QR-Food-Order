@@ -8,7 +8,7 @@ export default function Home() {
         QR Food Order
       </h1>
       <Link href="/dashboard">
-        <Button className="text-lg px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
+        <Button className=" text-lg px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
           จัดการร้านค้า
         </Button>
       </Link>

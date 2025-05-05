@@ -1,16 +1,9 @@
+import { MenuType } from "@/utils/type";
 import React, { FormEvent, useState } from "react";
 
-type MenuData = {
-  name: string;
-  price: string;
-  category: string;
-  image: File | null | string;
-  id?: string;
-};
-
 type AddMenuFormProps = {
-  onSubmit: (data: MenuData) => void;
-  initialValue?: MenuData;
+  onSubmit: (data: MenuType) => void;
+  initialValue?: MenuType;
 };
 
 const AddMenuForm = ({ onSubmit, initialValue }: AddMenuFormProps) => {
@@ -41,7 +34,7 @@ const AddMenuForm = ({ onSubmit, initialValue }: AddMenuFormProps) => {
 
   const _handleAddMenu = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const data: MenuData = {
+    const data: MenuType = {
       name: _name,
       price: _price,
       category: _category,

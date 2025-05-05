@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "@/store/slices/authSlice";
+import { UserType } from "@/utils/type";
 
 const AddRestaurantForm = () => {
   const router = useRouter();
@@ -16,7 +17,7 @@ const AddRestaurantForm = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const userId = useSelector((state: any) => state.auth.user?.id);
+  const userId = useSelector((state: UserType) => state.auth.user?.id);
 
   useEffect(() => {
     if (!userId) {

@@ -1,13 +1,14 @@
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
-import { extractIpfsHash } from "../route"; // ✅ ใช้จาก route เดิม หรือย้าย helper ไป lib
+import { NextRequest, NextResponse } from "next/server";
+import { extractIpfsHash } from "../route";
 import { deleteFileFromPinata } from "@/lib/pinata";
 
+// DELETE API to remove menu item
 export async function DELETE(
-  req: Request,
-  context: { params: { id: string } }
+  req: NextRequest,
+  { params }: { params: { id: string } }
 ) {
-  const id = context.params.id;
+  const { id } = params;
 
   try {
     const menuItem = await prisma.menuItem.findUnique({
@@ -42,9 +43,14 @@ export async function DELETE(
   }
 }
 
-export async function PATCH(req: Request, context: { params: { id: string } }) {
+// PATCH API to update menu item
+export async function PATCH(
+  req: NextRequest,
+  context: { params: { id: string } } // ใช้ type ตรงๆ
+) {
   const { name, price, category, image, active } = await req.json();
-  const id = context.params.id;
+  const { id } = context.params;
+
   console.log("received values in PATCH:", {
     name,
     price,

@@ -8,21 +8,15 @@ import AddMenuForm from "@/components/Forms/addMenuForm";
 import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-
-type MenuItem = {
-  id?: string;
-  name: string;
-  price: string;
-  category: string;
-  image: string | File | null;
-  active?: boolean;
-};
+import { MenuType } from "@/utils/type";
 
 export default function MenusPage() {
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [menuItems, setMenuItems] = useState<MenuType[]>([]);
   const [_isShowModal, _setIsShowModal] = useState(false);
   const [_renderModal, _setRenderModal] = useState<ReactElement>();
-  const restaurant = useSelector((state: any) => state.restaurant);
+  const restaurant = useSelector(
+    (state: { restaurant: { restaurantId: string } }) => state.restaurant
+  );
   const id = restaurant.restaurantId;
 
   useEffect(() => {
@@ -37,19 +31,19 @@ export default function MenusPage() {
     setMenuItems(res.data.menus);
   };
 
-  const _handleAddMenu = (data?: MenuItem) => {
+  const _handleAddMenu = (data?: MenuType) => {
     _setRenderModal(
       <AddMenuForm initialValue={data} onSubmit={_handleSubmit} />
     );
     _setIsShowModal(true);
   };
 
-  const _handleSubmit = async (data: MenuItem) => {
+  const _handleSubmit = async (data: MenuType) => {
     if (!data.name || !data.price || !data.category) return;
 
     // อัปโหลดรูปถ้ามี
     let imageUrl = "";
-    const image = data.image;
+    const image = data.image as File | string;
     if (typeof image === "string") {
       imageUrl = image; // ใช้รูปเดิม
     } else if (image instanceof File) {
@@ -89,13 +83,13 @@ export default function MenusPage() {
         }
       }
     } catch (err) {
-      toast.error("err");
+      toast.error(`${err}`);
     }
 
     fetchMenus();
   };
 
-  const _handleDeleteMenu = async (itemId: string) => {
+  const _handleDeleteMenu = async (itemId: string | undefined) => {
     const confirmDelete = window.confirm("คุณแน่ใจว่าจะลบเมนูนี้?");
     if (!confirmDelete) return;
 
@@ -123,14 +117,13 @@ export default function MenusPage() {
 
       <div className="flex flex-wrap gap-3 ">
         {menuItems.map((item) => (
-          <Card key={item.id} className="flex flex-1/3 p-4 mb-2 ">
+          <Card key={item.id} className="flex max-w-1/2 flex-1/3 p-4  ">
             {item.image && <img src={item.image} alt={item.name} width={500} />}
-            <div className="flex  items-center justify-between">
-              <div className="flex flex-col">
-                <div className="font-semibold">{item.name}</div>
-                <div>{item.price} บาท</div>
-              </div>
+            <div className="flex flex-col mb-auto">
+              <div className="font-semibold">{item.name}</div>
+              <div>{item.price} บาท</div>
             </div>
+
             <div className="flex justify-end ">
               <Button
                 className="bg-gray-500 text-white px-2 rounded hover:bg-yellow-600 mr-2"
