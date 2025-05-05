@@ -89,7 +89,7 @@ export default function TableOrderPage() {
   console.log("selectedItems", selectedItems);
 
   return (
-    <div className="">
+    <div className="p-5">
       <img
         src={"/assets/images/banner.png"}
         alt="banner"
