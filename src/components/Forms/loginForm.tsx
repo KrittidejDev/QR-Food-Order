@@ -14,7 +14,8 @@ import { useState } from "react";
 
 type LoginFormProps = {
   onSubmit: (data: { email: string; password: string }) => Promise<void>;
-} & React.ComponentPropsWithoutRef<"div">;
+  className?: string;
+};
 
 export function LoginForm({ className, onSubmit, ...props }: LoginFormProps) {
   const [email, setEmail] = useState("");

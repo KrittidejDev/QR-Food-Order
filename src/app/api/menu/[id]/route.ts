@@ -6,9 +6,9 @@ import { deleteFileFromPinata } from "@/lib/pinata";
 // DELETE API to remove menu item
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const id = (await params).id;
 
   try {
     const menuItem = await prisma.menuItem.findUnique({
@@ -46,10 +46,10 @@ export async function DELETE(
 // PATCH API to update menu item
 export async function PATCH(
   req: NextRequest,
-  context: { params: { id: string } } // ใช้ type ตรงๆ
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const { name, price, category, image, active } = await req.json();
-  const { id } = context.params;
+  const id = (await params).id;
 
   console.log("received values in PATCH:", {
     name,

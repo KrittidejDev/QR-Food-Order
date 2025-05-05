@@ -39,7 +39,7 @@ const AddMenuForm = ({ onSubmit, initialValue }: AddMenuFormProps) => {
       price: _price,
       category: _category,
       image: _image,
-      id: _menuId,
+      id: _menuId!,
     };
 
     onSubmit(data);

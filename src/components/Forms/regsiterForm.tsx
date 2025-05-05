@@ -13,8 +13,13 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 
 type RegisterFormProps = {
-  onSubmit: (data: { email: string; password: string }) => Promise<void>;
-} & React.ComponentPropsWithoutRef<"div">;
+  onSubmit: (data: {
+    email: string;
+    password: string;
+    confirmPassword: string;
+  }) => Promise<void>;
+  className?: string;
+};
 
 export function RegisterForm({
   className,

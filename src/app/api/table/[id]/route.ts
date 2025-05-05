@@ -3,9 +3,9 @@ import { NextResponse } from "next/server";
 
 export async function DELETE(
   req: Request,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = context.params;
+  const id = (await params).id;
 
   try {
     await prisma.table.delete({
@@ -19,11 +19,12 @@ export async function DELETE(
 
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const id = (await params).id;
   const { name } = await req.json();
   const updated = await prisma.table.update({
-    where: { id: params.id },
+    where: { id: id },
     data: { name },
   });
 

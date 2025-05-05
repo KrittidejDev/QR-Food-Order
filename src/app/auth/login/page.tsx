@@ -17,6 +17,7 @@ const LoginPage = () => {
       if (res.status === 200) {
         dispatch(
           setUser({
+            token: res.data.token,
             user: {
               email: res.data.user.email,
               id: res.data.user.id,
