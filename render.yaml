@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: qr-food-ordering
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: "20" # Lock node version to 20 (LTS)
+      - key: DISABLE_BUN
+        value: "true" # Disable Bun and use Node.js
+    autoDeploy: true
+
+  # Optional: Additional services for databases or other components (e.g., PostgreSQL)
+  # For example, if you're using a PostgreSQL database, you could add:
+  # - type: database
+  #   name: postgres-db
+  #   plan: free
+  #   databaseType: postgres
+
+build:
+  environment:
+    # Locking Node version to 20 (LTS) to ensure compatibility
+    NODE_VERSION: 20
+  commands:
+    # Installing dependencies and building the project
+    - npm install
+    - npm run build
+
+# Optional: if you need to define resources or specific settings for the build or services
+resources:
+  - name: qr-food-ordering
+    memory: 1024MB # Adjust memory as per the app's requirements
+    cpu: 0.5 # Adjust CPU if needed
+    disk: 1GB # Default disk space
