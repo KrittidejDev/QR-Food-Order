@@ -121,24 +121,16 @@ export default function MenusPage() {
         </Button>
       </div>
 
-      <div className="grid gap-4 ">
+      <div className="flex flex-wrap gap-3 ">
         {menuItems.map((item) => (
-          <Card key={item.id} className=" p-4 ">
-            <div className="flex items-center gap-x-6 ">
-              {item.image && (
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  width={100}
-                  height={100}
-                />
-              )}
+          <Card key={item.id} className="flex flex-1/3 p-4 mb-2 ">
+            {item.image && <img src={item.image} alt={item.name} width={500} />}
+            <div className="flex  items-center justify-between">
               <div className="flex flex-col">
                 <div className="font-semibold">{item.name}</div>
                 <div>{item.price} บาท</div>
               </div>
             </div>
-
             <div className="flex justify-end ">
               <Button
                 className="bg-gray-500 text-white px-2 rounded hover:bg-yellow-600 mr-2"

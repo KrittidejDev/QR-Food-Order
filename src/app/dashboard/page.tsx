@@ -50,7 +50,7 @@ const DashBoardPage = () => {
           phone: selected.phone,
         })
       );
-      router.push("/dashboard/restaurant/menus");
+      router.push(`/dashboard/restaurant?id=${id}`);
     }
   };
 

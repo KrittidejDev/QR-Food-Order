@@ -3,10 +3,36 @@
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+
+type RestaurantType = {
+  address: string;
+  createdAt: string;
+  id: string;
+  name: string;
+  ownerId: string;
+  phone: string;
+  cover_img?: string;
+  avatar?: string;
+};
+
+type MenuType = {
+  active: boolean;
+  category: string;
+  id: string;
+  image: string;
+  name: string;
+  price: string;
+};
 
 export default function TableOrderPage() {
-  const [menuItems, setMenuItems] = useState([]);
-  const [selectedItems, setSelectedItems] = useState({});
+  const [_menuData, _setMenuData] = useState<MenuType[]>([]);
+  const [_restaurant, _setRestaurant] = useState<RestaurantType>();
+  const [_tableData, _setTableData] = useState<any>();
+  const [selectedItems, setSelectedItems] = useState<{ [id: string]: number }>(
+    {}
+  );
   const { restaurantId, tableId } = useParams() as {
     restaurantId: string;
     tableId: string;
@@ -14,91 +40,125 @@ export default function TableOrderPage() {
 
   useEffect(() => {
     if (restaurantId) {
-      fetchMenu();
+      fetch();
     }
   }, [restaurantId]);
 
-  console.log("rester ID", restaurantId);
-  console.log("table ID", tableId);
-  const fetchMenu = async () => {
-    const res = await axios.get(`/api/menu?restaurantId=${restaurantId}`);
-    setMenuItems(res.data.menus);
+  const fetch = async () => {
+    try {
+      const res = await axios.get(`/api/restaurants/${restaurantId}`);
+      console.log("res", res);
+      if (res.status === 200) {
+        const restaurants = res.data.restaurant;
+        const menu = restaurants.menuItems;
+        const tables = restaurants.tables;
+        const currentTable = tables.find((t: any) => t.id === tableId);
+
+        _setRestaurant(restaurants);
+        _setMenuData(menu);
+        _setTableData(currentTable);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
+  // Handle adding item to the cart
   const handleAdd = (id: string) => {
     setSelectedItems((prev) => ({
       ...prev,
-      [id]: (prev[id] || 0) + 1,
+      [id]: (prev[id] || 0) + 1, // เพิ่มจำนวนถ้ามีรายการอยู่แล้ว ถ้าไม่มีให้เริ่มต้นที่ 1
     }));
   };
 
-  const handleSubmit = async () => {
-    const items = Object.entries(selectedItems).map(([id, qty]) => ({
-      id,
-      qty,
-    }));
-
-    const totalAmount = menuItems.reduce((sum, item) => {
-      const qty = selectedItems[item.id] || 0;
-      return sum + qty * parseFloat(item.price);
-    }, 0);
-
-    await axios.post("/api/order", {
-      restaurantId,
-      tableId,
-      items,
-      totalAmount,
-      status: "pending",
+  // Handle subtracting item from the cart
+  const handleSubtract = (id: string) => {
+    setSelectedItems((prev) => {
+      const currentQty = prev[id] || 0;
+      if (currentQty > 0) {
+        return {
+          ...prev,
+          [id]: currentQty - 1, // ลดจำนวนถ้ามีรายการอยู่แล้ว
+        };
+      }
+      return prev; // ถ้าไม่มีจำนวนให้ไม่ทำอะไร
     });
-
-    alert("สั่งอาหารเรียบร้อยแล้ว");
-    setSelectedItems({});
   };
+
+  console.log("selectedItems", selectedItems);
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">เมนูอาหาร</h2>
-      <ul className="space-y-2">
-        {menuItems.map((item: any) => (
-          <div
-            key={item.id}
-            className="flex p-4 bg-white shadow-md rounded justify-between"
-          >
-            <div className="flex items-center gap-x-6">
-              {item.image && (
+    <div className="">
+      <img
+        src={"/assets/images/banner.png"}
+        alt="banner"
+        className="w-full h-auto rounded"
+      />
+      <div className="relative -mt-15 flex justify-center ">
+        <img
+          src="/assets/images/avatar.png"
+          alt="avatar"
+          className="w-20 h-20 rounded-full border-4 border-white shadow-lg"
+        />
+      </div>
+      <div className="flex flex-col items-center ">
+        <div className="font-bold">{_restaurant?.name}</div>
+        <div className="text-sm mb-2">{_tableData?.name}</div>
+      </div>
+      <div className="flex flex-wrap gap-3 p-4 ">
+        {_menuData &&
+          _menuData.map((e) => (
+            <Card
+              key={e.id}
+              className=" flex flex-col max-w-1/2 flex-1/3 p-2 gap-2"
+            >
+              {e.image && (
                 <img
-                  src={item.image}
-                  alt={item.name}
-                  width={100}
-                  height={100}
+                  src={e.image}
+                  alt={e.name}
+                  className="w-full h-auto rounded"
                 />
               )}
-              <div>
-                <div className="font-semibold">{item.name}</div>
-                <div>{item.category}</div>
-                <div>{item.price} บาท</div>
-              </div>{" "}
-            </div>
-            <button
-              onClick={() => handleAdd(item.id)}
-              className="bg-green-600 text-white px-2 py-1 rounded"
-            >
-              เพิ่ม
-            </button>
-          </div>
-        ))}
-      </ul>
+              <div className="flex flex-col">
+                <div className="text-sm font-semibold">{e.name}</div>
+                <div className="text-sm">{e.price} บาท</div>
+              </div>
+              <div className="flex items-center justify-end gap-2 mt-auto">
+                {selectedItems[e.id] >= 1 && (
+                  <>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className={`text-sm  hover:bg-yellow-600 ${
+                        selectedItems[e.id] >= 1
+                          ? "bg-orange-500 text-white"
+                          : ""
+                      }`}
+                      onClick={() => handleSubtract(e.id)}
+                    >
+                      -
+                    </Button>
+                    <span className="text-sm">{selectedItems[e.id]}</span>
+                  </>
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className={`text-sm  hover:bg-yellow-600 ${
+                    selectedItems[e.id] >= 1 ? "bg-orange-500 text-white" : ""
+                  }`}
+                  onClick={() => handleAdd(e.id)}
+                >
+                  +
+                </Button>
+              </div>
+            </Card>
+          ))}
+      </div>
 
-      {Object.keys(selectedItems).length > 0 && (
-        <div className="mt-4">
-          <button
-            onClick={handleSubmit}
-            className="bg-blue-600 text-white px-4 py-2 rounded"
-          >
-            ยืนยันการสั่งอาหาร
-          </button>
-        </div>
-      )}
+      <div className="flex justify-center mb-50">
+        <Button className="bg-red-500 text-white">ลบร้าน</Button>
+      </div>
     </div>
   );
 }

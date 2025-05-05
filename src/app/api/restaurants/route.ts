@@ -27,9 +27,8 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
-  // สร้าง URLSearchParams จาก URL
   const searchParams = new URLSearchParams(new URL(req.url).search);
-  const ownerId = searchParams.get("ownerId"); // ดึง ownerId
+  const ownerId = searchParams.get("ownerId");
 
   if (!ownerId) {
     return NextResponse.json({ error: "ownerId is required" }, { status: 400 });
@@ -38,7 +37,7 @@ export async function GET(req: Request) {
   try {
     const restaurants = await prisma.restaurant.findMany({
       where: {
-        ownerId, // ฟิลเตอร์ตาม ownerId
+        ownerId,
       },
     });
 

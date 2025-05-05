@@ -80,12 +80,25 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader>
         <Link href={`/dashboard`}>🍽️ QR Food Order</Link>
+        <SidebarMenu>
+          <Link
+            href={`/dashboard`}
+            className="hover:text-yellow-400 transition-colors"
+          >
+            จัดการร้าน
+          </Link>
+        </SidebarMenu>
       </SidebarHeader>
+
       <SidebarMenu>
-        <Collapsible defaultOpen={false} className="group/collapsible">
-          {_restaurants &&
-            _restaurants.map((e) => (
-              <SidebarMenuItem key={e.id}>
+        {_restaurants &&
+          _restaurants.map((e) => (
+            <Collapsible
+              key={e.id}
+              defaultOpen={false}
+              className="group/collapsible"
+            >
+              <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton
                     className="hover:text-yellow-400 font-bold transition-colors"
@@ -123,8 +136,8 @@ export function AppSidebar() {
                   </SidebarMenuSub>
                 </CollapsibleContent>
               </SidebarMenuItem>
-            ))}
-        </Collapsible>
+            </Collapsible>
+          ))}
       </SidebarMenu>
       <SidebarFooter>
         <SidebarMenu className=" text-red-400 hover:text-red-500 transition-colors font-semibold">
