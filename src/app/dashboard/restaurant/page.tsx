@@ -1,126 +1,115 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import axios from "axios";
-import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "@/store/slices/authSlice";
+import { UserType } from "@/utils/type";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { MenuType, RestaurantType, UserType } from "@/utils/type";
 
-const CreateRestaurantPage = () => {
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id");
+const AddRestaurantForm = () => {
+  const router = useRouter();
+  const dispatch = useDispatch();
+
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const userId = useSelector((state: UserType) => state.auth.user?.id);
-  const [_restaurant, _setRestaurant] = useState<RestaurantType>();
-  const [_menuData, _setMenuDat] = useState<MenuType[]>();
-  const [_selectedItems, _setSelectedItems] = useState<Record<string, number>>(
-    {}
-  );
 
   useEffect(() => {
-    fetch();
-  }, []);
+    if (!userId) {
+      dispatch(logout());
+      router.push("/auth/login");
+    }
+  }, [userId, dispatch, router]);
 
-  const fetch = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
     try {
-      const res = await axios.get(`/api/restaurants?ownerId=${userId}`);
-      if (res.status === 200) {
-        const allRestaurants = res.data.restaurants;
-        const selected = allRestaurants.find(
-          (r: RestaurantType) => r.id === id
-        );
-        _setRestaurant(selected);
-      }
+      const res = await axios.post("/api/restaurants", {
+        name,
+        address,
+        phone,
+        ownerId: userId,
+      });
 
-      const resMenu = await axios.get(`/api/menu?restaurantId=${id}`);
-      if (resMenu.status === 200) {
-        _setMenuDat(resMenu.data.menus);
+      if (res.status === 201) {
+        router.push("/dashboard");
       }
-    } catch (err) {
-      toast.error(err as string);
+    } catch (error) {
+      setError("Failed to create restaurant.");
+      console.error("Error creating restaurant:", error);
+    } finally {
+      setLoading(false);
     }
-    const res = await axios.get(`/api/restaurants?ownerId=${userId}`);
-    if (res.status === 200) {
-      const allRestaurants = res.data.restaurants;
-      const selected = allRestaurants.find((r: RestaurantType) => r.id === id);
-      _setRestaurant(selected);
-    }
-  };
-
-  const handleAdd = () => {
-    _setSelectedItems({ data: 0 });
   };
 
   return (
-    <div>
-      <img src={"/assets/images/banner.png"} alt="banner" className="w-full" />
-      <div className="relative -mt-15 flex  justify-center ">
-        <img
-          src="/assets/images/avatar.png"
-          alt="avatar"
-          className="w-20 h-20 rounded-full border-4 border-white shadow-lg"
-        />
-      </div>
-      <div className="flex flex-col items-center mb-10">
-        <div className="font-bold ">{_restaurant?.name}</div>
-      </div>
-      <div className="flex flex-wrap gap-3 p-4 ">
-        {_menuData &&
-          _menuData.map((e) => (
-            <Card
-              key={e.id}
-              className=" flex flex-col max-w-1/2 flex-1/3 p-2 gap-2"
-            >
-              {e.image && (
-                <img
-                  src={e.image}
-                  alt={e.name}
-                  className="w-full h-auto rounded"
-                />
-              )}
-              <div className="flex flex-col">
-                <div className="text-sm font-semibold">{e.name}</div>
-                <div className="text-sm">{e.price} บาท</div>
-              </div>
-              <div className="flex items-center justify-end gap-2 mt-auto">
-                {_selectedItems[e.id] >= 1 && (
-                  <>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className={`text-sm  hover:bg-yellow-600 ${
-                        _selectedItems[e.id] >= 1
-                          ? "bg-orange-500 text-white"
-                          : ""
-                      }`}
-                      // onClick={() => handleSubtract(e.id)}
-                    >
-                      -
-                    </Button>
-                    <span className="text-sm">{_selectedItems[e.id]}</span>
-                  </>
-                )}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className={`text-sm  hover:bg-yellow-600 ${
-                    _selectedItems[e.id] >= 1 ? "bg-orange-500 text-white" : ""
-                  }`}
-                  onClick={() => handleAdd(/* e.id */)}
-                >
-                  +
-                </Button>
-              </div>
-            </Card>
-          ))}
-      </div>
-      <div className="flex justify-center mb-50">
-        <Button className="bg-red-500 text-white">ลบร้าน</Button>
-      </div>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-2xl">สร้างร้านใหม่</CardTitle>
+        <CardDescription>สร้างร้านและใส่รายละเอียด</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="flex flex-col gap-6">
+            <div className="grid gap-2">
+              <Label htmlFor="name">ชื่อร้าน</Label>
+              <Input
+                id="name"
+                type="text"
+                placeholder=""
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="phone">เบอร์โทร</Label>
+              <Input
+                id="phone"
+                type="text"
+                placeholder=""
+                required
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="address">ที่อยู่</Label>
+              <Input
+                id="address"
+                type="text"
+                placeholder=""
+                required
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+              />
+            </div>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "กำลังสร้างร้าน..." : "สร้างร้าน"}
+            </Button>
+            {error && <div className="text-red-500 mb-4">{error}</div>}
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 };
 
-export default CreateRestaurantPage;
+export default AddRestaurantForm;
