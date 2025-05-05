@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import domtoimage from "dom-to-image";
 import { TableType } from "@/utils/type";
+import MainLayout from "@/components/MainLayout";
 
 type RestaurantType = {
   restaurant: {
@@ -75,60 +76,64 @@ export default function TableManager() {
   }, [id]);
 
   return (
-    <div className="p-4 pb-40">
-      <h2 className="text-xl font-bold mb-4">จัดการโต๊ะ</h2>
-      <div className="flex gap-2 mb-4">
-        <input
-          type="text"
-          placeholder="ชื่อโต๊ะ"
-          value={_name}
-          onChange={(e) => _setName(e.target.value)}
-          className="border px-2 py-1"
-        />
-        <button
-          onClick={handleCreate}
-          className="bg-blue-600 text-white px-3 py-1 rounded"
-        >
-          เพิ่มโต๊ะ
-        </button>
-      </div>
-      <div className="space-y-2">
-        {_tables.map((table: TableType) => (
-          <div key={table.id} className="relative">
-            <Card className="flex  p-4  items-center">
-              <div
-                id={`card-${table.id}`}
-                className="flex flex-col border p-4  items-center"
-              >
-                <div className="text-xl font-bold ">ร้าน {restaurantName}</div>
-                <div className="text-sm ">โทร. {restaurantPhone}</div>
-                {table.qr_code_link && (
-                  <div>
-                    <img
-                      src={table.qr_code_link}
-                      alt="QR Code"
-                      className="w-32 h-32"
-                    />
+    <MainLayout>
+      <div className="bg-white rounded-2xl p-4 pb-40">
+        <h2 className="text-xl font-bold mb-4">จัดการโต๊ะ</h2>
+        <div className="flex gap-2 mb-4">
+          <input
+            type="text"
+            placeholder="ชื่อโต๊ะ"
+            value={_name}
+            onChange={(e) => _setName(e.target.value)}
+            className="border px-2 py-1"
+          />
+          <button
+            onClick={handleCreate}
+            className="bg-blue-600 text-white px-3 py-1 rounded"
+          >
+            เพิ่มโต๊ะ
+          </button>
+        </div>
+        <div className="space-y-2">
+          {_tables.map((table: TableType) => (
+            <div key={table.id} className="relative">
+              <Card className="flex  p-4  items-center">
+                <div
+                  id={`card-${table.id}`}
+                  className="flex flex-col border p-4  items-center"
+                >
+                  <div className="text-xl font-bold ">
+                    ร้าน {restaurantName}
                   </div>
-                )}
-                <span>{table.name}</span>
-              </div>
-              <Button
-                onClick={() => handleDownload(table)}
-                className="bg-green-600 text-white px-2 py-1 rounded"
-              >
-                ดาวน์โหลด
-              </Button>
-              <Button
-                onClick={() => handleDelete(table.id)}
-                className="bg-red-500 text-white"
-              >
-                ลบ
-              </Button>
-            </Card>
-          </div>
-        ))}
+                  <div className="text-sm ">โทร. {restaurantPhone}</div>
+                  {table.qr_code_link && (
+                    <div>
+                      <img
+                        src={table.qr_code_link}
+                        alt="QR Code"
+                        className="w-32 h-32"
+                      />
+                    </div>
+                  )}
+                  <span>{table.name}</span>
+                </div>
+                <Button
+                  onClick={() => handleDownload(table)}
+                  className="bg-green-600 text-white px-2 py-1 rounded"
+                >
+                  ดาวน์โหลด
+                </Button>
+                <Button
+                  onClick={() => handleDelete(table.id)}
+                  className="bg-red-500 text-white"
+                >
+                  ลบ
+                </Button>
+              </Card>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </MainLayout>
   );
 }

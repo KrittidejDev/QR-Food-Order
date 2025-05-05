@@ -41,3 +41,42 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const id = (await params).id;
+
+  try {
+    const restaurantItem = await prisma.restaurant.findUnique({
+      where: { id },
+    });
+
+    if (!restaurantItem) {
+      return NextResponse.json(
+        { error: "Menu item not found" },
+        { status: 404 }
+      );
+    }
+
+    // if (menuItem.image) {
+    //   const hash = extractIpfsHash(menuItem.image);
+    //   if (hash) {
+    //     await deleteFileFromPinata(hash);
+    //   }
+    // }
+
+    await prisma.restaurant.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ message: "Menu item deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting menu item:", error);
+    return NextResponse.json(
+      { error: "Failed to delete menu item" },
+      { status: 500 }
+    );
+  }
+}

@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { MenuType } from "@/utils/type";
+import MainLayout from "@/components/MainLayout";
 
 export default function MenusPage() {
   const [menuItems, setMenuItems] = useState<MenuType[]>([]);
@@ -104,48 +105,52 @@ export default function MenusPage() {
   };
 
   return (
-    <div className="flex-1 p-2 pb-40">
-      <div className="flex justify-between items-center">
-        <h1 className="text-xl font-bold mb-4">จัดการเมนูอาหาร</h1>
-        <Button
-          onClick={() => _handleAddMenu()}
-          className=" text-white p-3 rounded-md mb-4"
-        >
-          ➕ เพิ่มเมนู
-        </Button>
-      </div>
+    <MainLayout>
+      <div className="flex-1 p-6 pb-40">
+        <div className="flex justify-between items-center">
+          <h1 className="text-xl font-bold mb-4">จัดการเมนูอาหาร</h1>
+          <Button
+            onClick={() => _handleAddMenu()}
+            className=" text-white p-3 rounded-md mb-4"
+          >
+            ➕ เพิ่มเมนู
+          </Button>
+        </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-        {menuItems.map((item) => (
-          <Card key={item.id} className=" flex flex-col  p-2 gap-2">
-            {item.image && <img src={item.image} alt={item.name} width={500} />}
-            <div className="flex flex-col mb-auto">
-              <div className="font-semibold">{item.name}</div>
-              <div>{item.price} บาท</div>
-            </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+          {menuItems.map((item) => (
+            <Card key={item.id} className=" flex flex-col  p-2 gap-2">
+              {item.image && (
+                <img src={item.image} alt={item.name} width={500} />
+              )}
+              <div className="flex flex-col mb-auto">
+                <div className="font-semibold">{item.name}</div>
+                <div>{item.price} บาท</div>
+              </div>
 
-            <div className="flex justify-end ">
-              <Button
-                size={"sm"}
-                className="bg-gray-500 text-white text-sm rounded hover:bg-yellow-600 mr-2"
-                onClick={() => _handleAddMenu(item)}
-              >
-                แก้ไข
-              </Button>
-              <Button
-                size={"sm"}
-                className="bg-red-500 text-white  px-2 rounded hover:bg-red-600"
-                onClick={() => _handleDeleteMenu(item.id)}
-              >
-                🗑️ ลบ
-              </Button>
-            </div>
-          </Card>
-        ))}
+              <div className="flex justify-end ">
+                <Button
+                  size={"sm"}
+                  className="bg-gray-500 text-white text-sm rounded hover:bg-yellow-600 mr-2"
+                  onClick={() => _handleAddMenu(item)}
+                >
+                  แก้ไข
+                </Button>
+                <Button
+                  size={"sm"}
+                  className="bg-red-500 text-white  px-2 rounded hover:bg-red-600"
+                  onClick={() => _handleDeleteMenu(item.id)}
+                >
+                  🗑️ ลบ
+                </Button>
+              </div>
+            </Card>
+          ))}
+        </div>
+        <Modal isOpen={_isShowModal} onClose={_handleCloseModal}>
+          {_renderModal}
+        </Modal>
       </div>
-      <Modal isOpen={_isShowModal} onClose={_handleCloseModal}>
-        {_renderModal}
-      </Modal>
-    </div>
+    </MainLayout>
   );
 }

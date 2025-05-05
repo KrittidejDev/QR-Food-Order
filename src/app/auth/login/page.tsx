@@ -25,7 +25,8 @@ const LoginPage = () => {
           })
         );
         alert("Login Success");
-        router.push("/dashboard");
+        router.replace("/dashboard");
+        window.location.reload();
       }
     } catch (error) {
       console.error("Login Failed", error);

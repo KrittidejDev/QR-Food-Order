@@ -35,8 +35,14 @@ export function AppSidebar() {
   const dispatch = useDispatch();
   const userId = useSelector((state: UserType) => state.auth.user?.id);
   const [_restaurants, _setRestaurants] = useState<RestaurantProps[]>([]);
+  const [_restaurantId, _setRestaurantId] = useState<string>();
+  const restaurant = useSelector(
+    (state: { restaurant: { restaurantId: string } }) => state.restaurant
+  );
+  const restaurantId = restaurant.restaurantId;
 
   const fetch = async () => {
+    _setRestaurantId(restaurantId);
     if (!userId) {
       dispatch(logout());
       router.push("/auth/login");
@@ -65,6 +71,7 @@ export function AppSidebar() {
 
   const handleSelectRestaurant = (data: RestaurantType) => {
     if (data) {
+      _setRestaurantId(data.id);
       dispatch(
         setSelectedRestaurant({
           id: data.id,
@@ -72,7 +79,7 @@ export function AppSidebar() {
           phone: data.phone,
         })
       );
-      router.push("/dashboard/restaurant/menus");
+      router.replace("/dashboard/restaurant/menus");
     }
   };
 
@@ -97,6 +104,7 @@ export function AppSidebar() {
               key={e.id}
               defaultOpen={false}
               className="group/collapsible"
+              open={_restaurantId === e.id ? true : false}
             >
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
