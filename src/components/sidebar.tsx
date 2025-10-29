@@ -86,7 +86,7 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <Link href={`/dashboard`}>🍽️ QR Food Order</Link>
+        <Link href={`/`}>🍽️ QR Food Order</Link>
         <SidebarMenu>
           <Link
             href={`/dashboard`}
@@ -109,7 +109,7 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton
-                    className="hover:text-yellow-400 font-bold transition-colors"
+                    className="hover:text-yellow-400 font-bold transition-colors cursor-pointer"
                     onClick={() => handleSelectRestaurant(e)}
                   >
                     {e.name}
@@ -120,7 +120,7 @@ export function AppSidebar() {
                     <SidebarMenuSubItem>
                       <Link
                         href={`/dashboard/restaurant/menus?restaurant=${e.id}`}
-                        className="hover:text-yellow-400 transition-colors"
+                        className="hover:text-yellow-400 transition-colors cursor-pointer"
                       >
                         🍽️ เมนูอาหาร
                       </Link>
@@ -128,7 +128,7 @@ export function AppSidebar() {
                     <SidebarMenuSubItem>
                       <Link
                         href={`/dashboard/restaurant/tables?restaurant=${e.id}`}
-                        className="hover:text-yellow-400 transition-colors"
+                        className="hover:text-yellow-400 transition-colors cursor-pointer"
                       >
                         🪑 โต๊ะ
                       </Link>
@@ -136,7 +136,7 @@ export function AppSidebar() {
                     <SidebarMenuSubItem>
                       <Link
                         href={`/dashboard/restaurant/orders?restaurant=${e.id}`}
-                        className="hover:text-yellow-400 transition-colors"
+                        className="hover:text-yellow-400 transition-colors cursor-pointer"
                       >
                         📦 ออเดอร์
                       </Link>
@@ -148,12 +148,12 @@ export function AppSidebar() {
           ))}
       </SidebarMenu>
       <SidebarFooter>
-        <SidebarMenu className=" text-red-400 hover:text-red-500 transition-colors font-semibold">
+        <SidebarMenu className=" text-red-400 hover:text-red-500 transition-colors font-semibold cursor-pointer">
           <Link href={`/dashboard/restaurant`}>➕ สร้างร้าน</Link>
         </SidebarMenu>
         <SidebarMenu
           onClick={handleLogout}
-          className=" text-red-400 hover:text-red-500 transition-colors font-semibold"
+          className=" text-red-400 hover:text-red-500 transition-colors font-semibold cursor-pointer"
         >
           🚪 Logout
         </SidebarMenu>
