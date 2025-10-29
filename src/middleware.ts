@@ -3,7 +3,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
-const PUBLIC_PATHS = ["/auth", "/api", "/customer"]; // Path ที่ไม่ต้องการการตรวจสอบ
+const PUBLIC_PATHS = ["/auth", "/api", "/customer"];
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;

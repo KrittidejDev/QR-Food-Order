@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../../store/slices/authSlice";
+import { toast } from "react-toastify";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -24,13 +25,12 @@ const LoginPage = () => {
             },
           })
         );
-        alert("Login Success");
-        router.replace("/dashboard");
-        window.location.reload();
+        toast.success("Login Success");
+        router.push("/dashboard");
       }
     } catch (error) {
       console.error("Login Failed", error);
-      alert("Login Failed");
+      toast.error("Login Failed");
     }
   };
 
